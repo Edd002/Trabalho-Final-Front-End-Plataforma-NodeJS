@@ -2,35 +2,31 @@ List<ProductModel> productsFromJson(dynamic str) =>
     List<ProductModel>.from((str).map((x) => ProductModel.fromJson(x)));
 
 class ProductModel {
-  late String? id;
-  late String? productName;
-  late String? productDescription;
-  late int? productPrice;
-  late String? productImage;
+  late int? id;
+  late String? descricao;
+  late String? valor;
+  late String? marca;
 
   ProductModel({
     this.id,
-    this.productName,
-    this.productDescription,
-    this.productPrice,
-    this.productImage,
+    this.descricao,
+    this.valor,
+    this.marca
   });
 
   ProductModel.fromJson(Map<String, dynamic> json) {
-    id = json['_id'];
-    productName = json['productName'];
-    productDescription = json['productDescription'];
-    productPrice = json['productPrice'];
-    productImage = json['productImage'];
+    id = json['id'];
+    descricao = json['descricao'];
+    valor = json['valor'];
+    marca = json['marca'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
-    _data['_id'] = id;
-    _data['productName'] = productName;
-    _data['productDescription'] = productDescription;
-    _data['productPrice'] = productPrice;
-    _data['productImage'] = productImage;
+    _data['id'] = id;
+    _data['descricao'] = descricao;
+    _data['valor'] = valor;
+    _data['marca'] = marca;
     return _data;
   }
 }

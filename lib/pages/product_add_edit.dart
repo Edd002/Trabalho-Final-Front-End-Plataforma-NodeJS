@@ -30,7 +30,7 @@ class _ProductAddEditState extends State<ProductAddEdit> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('NodeJS - CRUD'),
+          title: const Text('Flutter & NodeJS - CRUD Produto'),
           elevation: 0,
         ),
         backgroundColor: Colors.grey[200],
@@ -76,19 +76,18 @@ class _ProductAddEditState extends State<ProductAddEdit> {
             child: FormHelper.inputFieldWidget(
               context,
               const Icon(Icons.person),
-              "ProductName",
-              "Product Name",
+              "ProductDescription",
+              "Descrição do Produto",
               (onValidateVal) {
                 if (onValidateVal.isEmpty) {
-                  return 'ProductName can\'t be empty.';
+                  return 'A descrição do produto não pode ser vazia.';
                 }
-
                 return null;
               },
               (onSavedVal) => {
-                productModel!.productName = onSavedVal,
+                productModel!.descricao = onSavedVal, // Product Name
               },
-              initialValue: productModel!.productName ?? "",
+              initialValue: productModel!.descricao ?? "", // Product Name
               obscureText: false,
               borderFocusColor: Colors.black,
               borderColor: Colors.black,
@@ -107,20 +106,19 @@ class _ProductAddEditState extends State<ProductAddEdit> {
               context,
               const Icon(Icons.person),
               "ProductPrice",
-              "Product Price",
+              "Preço do Produto",
               (onValidateVal) {
                 if (onValidateVal.isEmpty) {
-                  return 'Product Price can\'t be empty.';
+                  return 'O preço do produto não pode ser vazio.';
                 }
-
                 return null;
               },
               (onSavedVal) => {
-                productModel!.productPrice = int.parse(onSavedVal),
+                productModel!.valor = onSavedVal /*double.parse(onSavedVal)*/,
               },
-              initialValue: productModel!.productPrice == null
+              initialValue: productModel!.valor == null
                   ? ""
-                  : productModel!.productPrice.toString(),
+                  : productModel!.valor.toString(),
               obscureText: false,
               borderFocusColor: Colors.black,
               borderColor: Colors.black,
@@ -133,12 +131,12 @@ class _ProductAddEditState extends State<ProductAddEdit> {
           ),
           picPicker(
             isImageSelected,
-            productModel!.productImage ?? "",
+            /*productModel!.productImage ??*/ "",
             (file) => {
               setState(
                 () {
                   //model.productPic = file.path;
-                  productModel!.productImage = file.path;
+                  //productModel!.productImage = file.path;
                   isImageSelected = true;
                 },
               )
@@ -149,7 +147,7 @@ class _ProductAddEditState extends State<ProductAddEdit> {
           ),
           Center(
             child: FormHelper.submitButton(
-              "Save",
+              "Salvar",
               () {
                 if (validateAndSave()) {
                   print(productModel!.toJson());
@@ -178,7 +176,7 @@ class _ProductAddEditState extends State<ProductAddEdit> {
                         FormHelper.showSimpleAlertDialog(
                           context,
                           Config.appName,
-                          "Error occur",
+                          "Um erro ocorreu.",
                           "OK",
                           () {
                             Navigator.of(context).pop();

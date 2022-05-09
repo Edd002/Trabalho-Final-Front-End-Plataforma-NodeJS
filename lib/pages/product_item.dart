@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:snippet_coder_utils/FormHelper.dart';
 import '../model/product_model.dart';
 
 class ProductItem extends StatelessWidget {
   final ProductModel? model;
   final Function? onDelete;
 
-  ProductItem({
+  const ProductItem({
     Key? key,
     this.model,
     this.onDelete,
@@ -36,11 +35,9 @@ class ProductItem extends StatelessWidget {
         Container(
           width: 120,
           alignment: Alignment.center,
-          margin: EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           child: Image.network(
-            (model!.productImage == null || model!.productImage == "")
-                ? "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png"
-                : model!.productImage!,
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
             height: 70,
             fit: BoxFit.scaleDown,
           ),
@@ -52,7 +49,7 @@ class ProductItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                model!.productName!,
+                model!.descricao!,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -62,13 +59,13 @@ class ProductItem extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                "₹${model!.productPrice}",
+                "R\$${model!.valor}",
                 style: const TextStyle(color: Colors.black),
               ),
               const SizedBox(
                 height: 10,
               ),
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width - 180,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,

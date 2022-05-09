@@ -12,40 +12,17 @@ class ProductsList extends StatefulWidget {
 }
 
 class _ProductsListState extends State<ProductsList> {
-  // List<ProductModel> products = List<ProductModel>.empty(growable: true);
   bool isApiCallProcess = false;
   @override
   void initState() {
     super.initState();
-
-    // products.add(
-    //   ProductModel(
-    //     id: "1",
-    //     productName: "Haldiram",
-    //     productImage:
-    //         "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=85,metadata=none,w=400,h=400/app/images/products/full_screen/pro_86973.jpg",
-    //     productDescription: "Haldiram Foods",
-    //     productPrice: 500,
-    //   ),
-    // );
-
-    // products.add(
-    //   ProductModel(
-    //     id: "1",
-    //     productName: "Haldiram",
-    //     productImage:
-    //         "https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=85,metadata=none,w=400,h=400/app/images/products/full_screen/pro_86973.jpg",
-    //     productDescription: "Haldiram Foods",
-    //     productPrice: 500,
-    //   ),
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('NodeJS - CRUD'),
+        title: const Text('Flutter & NodeJS - CRUD Produto'),
         elevation: 0,
       ),
       backgroundColor: Colors.grey[200],
@@ -103,7 +80,7 @@ class _ProductsListState extends State<ProductsList> {
                     '/add-product',
                   );
                 },
-                child: const Text('Add Product'),
+                child: const Text('Adicionar Produto'),
               ),
               ListView.builder(
                 shrinkWrap: true,
