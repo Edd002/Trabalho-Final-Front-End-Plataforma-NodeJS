@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_nodejs_crud_app/model/product_model.dart';
 import 'package:flutter_nodejs_crud_app/services/api_service.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
@@ -21,9 +18,7 @@ class _ProductAddEditState extends State<ProductAddEdit> {
   ProductModel? productModel;
   static final GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   bool isApiCallProcess = false;
-  List<Object> images = [];
   bool isEditMode = false;
-  bool isImageSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +80,38 @@ class _ProductAddEditState extends State<ProductAddEdit> {
                 return null;
               },
               (onSavedVal) => {
-                productModel!.descricao = onSavedVal, // Product Name
+                productModel!.descricao = onSavedVal,
               },
-              initialValue: productModel!.descricao ?? "", // Product Name
+              initialValue: productModel!.descricao ?? "",
+              obscureText: false,
+              borderFocusColor: Colors.black,
+              borderColor: Colors.black,
+              textColor: Colors.black,
+              hintColor: Colors.black.withOpacity(0.7),
+              borderRadius: 10,
+              showPrefixIcon: false,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              bottom: 10,
+              top: 10,
+            ),
+            child: FormHelper.inputFieldWidget(
+              context,
+              const Icon(Icons.person),
+              "ProductBrand",
+              "Marca do Produto",
+              (onValidateVal) {
+                if (onValidateVal.isEmpty) {
+                  return 'A marca do produto não pode ser vazia.';
+                }
+                return null;
+              },
+              (onSavedVal) => {
+                productModel!.marca = onSavedVal,
+              },
+              initialValue: productModel!.marca ?? "",
               obscureText: false,
               borderFocusColor: Colors.black,
               borderColor: Colors.black,
@@ -110,11 +134,13 @@ class _ProductAddEditState extends State<ProductAddEdit> {
               (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'O preço do produto não pode ser vazio.';
+                } else if (double.tryParse(onValidateVal.toString().replaceAll(",", ".")) == null) {
+                  return 'O preço do produto deve ser numérico (ex.: 2.99).';
                 }
                 return null;
               },
               (onSavedVal) => {
-                productModel!.valor = onSavedVal /*double.parse(onSavedVal)*/,
+                productModel!.valor = onSavedVal,
               },
               initialValue: productModel!.valor == null
                   ? ""
@@ -128,19 +154,6 @@ class _ProductAddEditState extends State<ProductAddEdit> {
               showPrefixIcon: false,
               suffixIcon: const Icon(Icons.monetization_on),
             ),
-          ),
-          picPicker(
-            isImageSelected,
-            /*productModel!.productImage ??*/ "",
-            (file) => {
-              setState(
-                () {
-                  //model.productPic = file.path;
-                  //productModel!.productImage = file.path;
-                  isImageSelected = true;
-                },
-              )
-            },
           ),
           const SizedBox(
             height: 20,
@@ -156,11 +169,7 @@ class _ProductAddEditState extends State<ProductAddEdit> {
                     isApiCallProcess = true;
                   });
 
-                  APIService.saveProduct(
-                    productModel!,
-                    isEditMode,
-                    isImageSelected,
-                  ).then(
+                  APIService.saveProduct(productModel!, isEditMode).then(
                     (response) {
                       setState(() {
                         isApiCallProcess = false;
@@ -208,76 +217,6 @@ class _ProductAddEditState extends State<ProductAddEdit> {
       return true;
     }
     return false;
-  }
-
-  static Widget picPicker(
-    bool isImageSelected,
-    String fileName,
-    Function onFilePicked,
-  ) {
-    Future<XFile?> _imageFile;
-    ImagePicker _picker = ImagePicker();
-
-    return Column(
-      children: [
-        fileName.isNotEmpty
-            ? isImageSelected
-                ? Image.file(
-                    File(fileName),
-                    width: 300,
-                    height: 300,
-                  )
-                : SizedBox(
-                    child: Image.network(
-                      fileName,
-                      width: 200,
-                      height: 200,
-                      fit: BoxFit.scaleDown,
-                    ),
-                  )
-            : SizedBox(
-                child: Image.network(
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.scaleDown,
-                ),
-              ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 35.0,
-              width: 35.0,
-              child: IconButton(
-                padding: const EdgeInsets.all(0),
-                icon: const Icon(Icons.image, size: 35.0),
-                onPressed: () {
-                  _imageFile = _picker.pickImage(source: ImageSource.gallery);
-                  _imageFile.then((file) async {
-                    onFilePicked(file);
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              height: 35.0,
-              width: 35.0,
-              child: IconButton(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                icon: const Icon(Icons.camera, size: 35.0),
-                onPressed: () {
-                  _imageFile = _picker.pickImage(source: ImageSource.camera);
-                  _imageFile.then((file) async {
-                    onFilePicked(file);
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 
   isValidURL(url) {

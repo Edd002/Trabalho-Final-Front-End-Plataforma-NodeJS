@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../model/product_model.dart';
 
 class ProductItem extends StatelessWidget {
@@ -28,75 +29,82 @@ class ProductItem extends StatelessWidget {
   }
 
   Widget cartItem(context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 120,
-          alignment: Alignment.center,
-          margin: const EdgeInsets.all(10),
-          child: Image.network(
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-            height: 70,
-            fit: BoxFit.scaleDown,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                model!.descricao!,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "R\$${model!.valor}",
-                style: const TextStyle(color: Colors.black),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 180,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      child: const Icon(Icons.edit),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          '/edit-product',
-                          arguments: {
-                            'model': model,
-                          },
-                        );
-                      },
-                    ),
-                    GestureDetector(
-                      child: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+              width: MediaQuery.of(context).size.width * 0.775,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Descrição: " + model!.descricao!,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      onTap: () {
-                        onDelete!(model);
-                      },
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 7.5,
+                  ),
+                  Row(children: [
+                    Text(
+                      "Marca: ${model!.marca}",
+                      style: const TextStyle(color: Colors.black),
+                    )
+                  ]),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(children: [
+                    Text(
+                      "Valor: R\$${NumberFormat.currency(locale: 'en_US').parse(model!.valor.toString()).toString()}",
+                      style: const TextStyle(color: Colors.black),
+                    )
+                  ]),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              )),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.125,
+            child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    child: const Icon(Icons.edit),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        '/edit-product',
+                        arguments: {
+                          'model': model,
+                        },
+                      );
+                    },
+                  ),
+                  GestureDetector(
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
                     ),
-                  ],
-                ),
+                    onTap: () {
+                      onDelete!(model);
+                    },
+                  ),
+                ],
               )
-            ],
-          ),
-        ),
-      ],
+            ]),
+          )
+        ],
+      ),
     );
   }
 }

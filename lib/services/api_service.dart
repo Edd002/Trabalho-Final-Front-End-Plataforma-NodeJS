@@ -43,70 +43,91 @@ class APIService {
     }
   }
 
-  // CONTINUAR: CONFIGURAR A CHAMADA DOS ENDPOINTS DE CADASTRAR/ALTERAR E EXLCUIR
-  // Cadastrar ou atualizar um produto
-  static Future<bool> saveProduct(
-    ProductModel model,
-    bool isEditMode,
-    bool isFileSelected,
-  ) async {
-    String token = await generateToken();
-    var productURL = Config.productsAPIuri;
-
-    if (isEditMode) {
-      productURL = productURL + "/" + model.id.toString();
-    }
-
-    var requestMethod = isEditMode ? "PUT" : "POST";
-    var request = http.MultipartRequest(
-        requestMethod, Uri.http(Config.apiURL, productURL));
-
-    request.headers['Content-Type'] = 'application/json';
-    request.headers['Authorization'] = 'Bearer $token';
-    request.fields["descricao"] = model.descricao!;
-    request.fields["marca"] = 'Marca Teste';//model.marca!;
-    request.fields["valor"] = model.valor!.toString();
-
-    /*
-    if (model.productImage != null && isFileSelected) {
-      http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-        'productImage',
-        model.productImage!,
-      );
-
-      request.files.add(multipartFile);
-    }
-    */
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      return true;
+  // Cadastrar ou atualizar produto
+  static Future<bool> saveProduct(ProductModel model, bool isEditMode) async {
+    if (!isEditMode) {
+      return insertProduct(model);
     } else {
-      return false;
+      return updateProduct(model);
     }
+  }
+
+  // Cadastrar produto
+  static Future<bool> insertProduct(ProductModel model) async {
+    var requestUri = Config.productsAPIuri;
+    String token = await generateToken();
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    String requestBody = json.encode({
+      "descricao": model.descricao,
+      "valor": model.valor,
+      "marca": model.marca
+    });
+
+    bool sucess = false;
+    await client
+        .post(Uri.http(Config.apiURL, requestUri),
+            headers: requestHeaders, body: requestBody)
+        .catchError((e) {
+      print('Erro: $e');
+    }).then((response) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        sucess = true;
+      }
+    });
+    return sucess;
+  }
+
+  // Atualizar produto
+  static Future<bool> updateProduct(ProductModel model) async {
+    var requestUri = Config.productsAPIuri + "/${model.id}";
+    String token = await generateToken();
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    String requestBody = json.encode({
+      "descricao": model.descricao,
+      "valor": model.valor,
+      "marca": model.marca
+    });
+
+    bool sucess = false;
+    await client
+        .put(Uri.http(Config.apiURL, requestUri),
+            headers: requestHeaders, body: requestBody)
+        .catchError((e) {
+      print('Erro: $e');
+    }).then((response) {
+      if (response.statusCode == 200) {
+        sucess = true;
+      }
+    });
+    return sucess;
   }
 
   // Excluir um produto
   static Future<bool> deleteProduct(productId) async {
+    var requestUri = Config.productsAPIuri + "/$productId";
+    String token = await generateToken();
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
     };
 
-    var url = Uri.http(
-      Config.apiURL,
-      Config.productsAPIuri + "/" + productId,
-    );
-
-    var response = await client.delete(
-      url,
-      headers: requestHeaders,
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      return false;
-    }
+    await client
+        .delete(Uri.http(Config.apiURL, requestUri), headers: requestHeaders)
+        .catchError((e) {
+      print('Erro: $e');
+    }).then((response) {
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return false;
   }
 }
