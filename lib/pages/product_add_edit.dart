@@ -175,7 +175,7 @@ class _ProductAddEditState extends State<ProductAddEdit> {
                         isApiCallProcess = false;
                       });
 
-                      if (response) {
+                      if (response.isEmpty) {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           '/',
@@ -185,7 +185,7 @@ class _ProductAddEditState extends State<ProductAddEdit> {
                         FormHelper.showSimpleAlertDialog(
                           context,
                           Config.appName,
-                          "Um erro ocorreu.",
+                          "Um erro ocorreu.\n$response",
                           "OK",
                           () {
                             Navigator.of(context).pop();

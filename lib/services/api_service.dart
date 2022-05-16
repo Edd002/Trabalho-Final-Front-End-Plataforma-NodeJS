@@ -1,6 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter_nodejs_crud_app/model/login_request_model.dart';
+import 'package:flutter_nodejs_crud_app/model/login_response_model.dart';
 import 'package:flutter_nodejs_crud_app/model/product_model.dart';
+import 'package:flutter_nodejs_crud_app/model/register_request_model.dart';
+import 'package:flutter_nodejs_crud_app/model/register_response_model.dart';
+import 'package:flutter_nodejs_crud_app/services/shared_service.dart';
 import 'package:http/http.dart' as http;
 
 import '../../config.dart';
@@ -8,27 +13,13 @@ import '../../config.dart';
 class APIService {
   static var client = http.Client();
 
-  // PASSAR O LOGIN E SENHA TEMPORARIAMENTE PARA CONSEGUIR O TOKEN TODA VEZ QUE SUBIR O APP ATÉ TER O LOGIN IMPLEMENTADO
-  static Future<String> generateToken() async {
-    var token = '';
-
-    await client
-        .post(Uri.http(Config.apiURL, Config.securityAPIuri),
-            headers: {'Content-Type': 'application/json'},
-            body: json.encode({"login": "admin", "senha": "1234"}))
-        .catchError((e) {
-      print('Erro: $e');
-    }).then((response) => token = json.decode(response.body)['token']);
-
-    return token;
-  }
-
   // Buscar todos os produtos
   static Future<List<ProductModel>?> getProducts() async {
-    String token = await generateToken();
+    LoginResponseModel? loginDetails = await SharedService.loginDetails();
+
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer ${loginDetails?.token}'
     };
 
     var response = await client.get(
@@ -44,7 +35,7 @@ class APIService {
   }
 
   // Cadastrar ou atualizar produto
-  static Future<bool> saveProduct(ProductModel model, bool isEditMode) async {
+  static Future<String> saveProduct(ProductModel model, bool isEditMode) async {
     if (!isEditMode) {
       return insertProduct(model);
     } else {
@@ -53,12 +44,13 @@ class APIService {
   }
 
   // Cadastrar produto
-  static Future<bool> insertProduct(ProductModel model) async {
+  static Future<String> insertProduct(ProductModel model) async {
     var requestUri = Config.productsAPIuri;
-    String token = await generateToken();
+    LoginResponseModel? loginDetails = await SharedService.loginDetails();
+
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer ${loginDetails?.token}'
     };
     String requestBody = json.encode({
       "descricao": model.descricao,
@@ -66,27 +58,28 @@ class APIService {
       "marca": model.marca
     });
 
-    bool sucess = false;
+    String responseMessage = "";
     await client
         .post(Uri.http(Config.apiURL, requestUri),
             headers: requestHeaders, body: requestBody)
         .catchError((e) {
       print('Erro: $e');
     }).then((response) {
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        sucess = true;
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        responseMessage = jsonDecode(response.body)['message'];
       }
     });
-    return sucess;
+    return responseMessage;
   }
 
   // Atualizar produto
-  static Future<bool> updateProduct(ProductModel model) async {
+  static Future<String> updateProduct(ProductModel model) async {
     var requestUri = Config.productsAPIuri + "/${model.id}";
-    String token = await generateToken();
+    LoginResponseModel? loginDetails = await SharedService.loginDetails();
+
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer ${loginDetails?.token}'
     };
     String requestBody = json.encode({
       "descricao": model.descricao,
@@ -94,40 +87,73 @@ class APIService {
       "marca": model.marca
     });
 
-    bool sucess = false;
+    String responseMessage = "";
     await client
         .put(Uri.http(Config.apiURL, requestUri),
             headers: requestHeaders, body: requestBody)
         .catchError((e) {
       print('Erro: $e');
     }).then((response) {
-      if (response.statusCode == 200) {
-        sucess = true;
+      if (response.statusCode != 200) {
+        responseMessage = jsonDecode(response.body)['message'];
       }
     });
-    return sucess;
+    return responseMessage;
   }
 
   // Excluir um produto
-  static Future<bool> deleteProduct(productId) async {
+  static Future<String> deleteProduct(productId) async {
     var requestUri = Config.productsAPIuri + "/$productId";
-    String token = await generateToken();
+    LoginResponseModel? loginDetails = await SharedService.loginDetails();
+
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token'
+      'Authorization': 'Bearer ${loginDetails?.token}'
     };
 
+    String responseMessage = "";
     await client
         .delete(Uri.http(Config.apiURL, requestUri), headers: requestHeaders)
         .catchError((e) {
       print('Erro: $e');
     }).then((response) {
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
+      if (response.statusCode != 200) {
+        responseMessage = jsonDecode(response.body)['message'];
       }
     });
-    return false;
+    return responseMessage;
+  }
+
+  // Login
+  static Future<LoginResponseModel?> login(LoginRequestModel model) async {
+    await client
+        .post(Uri.http(Config.apiURL, Config.securityLoginAPIuri),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(model.toJson()))
+        .catchError((e) {
+      print('Erro: $e');
+    }).then((response) async {
+      if (response.statusCode == 200) {
+        await SharedService.setLoginDetails(loginResponseJson(response.body));
+        return loginResponseJson(response.body);
+      }
+    });
+    return null;
+  }
+
+  // Registro
+  static Future<RegisterResponseModel?> register(RegisterRequestModel model) async {
+    return await client
+        .post(Uri.http(Config.apiURL, Config.securityResgisterAPIuri),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(model.toJson()))
+        .catchError((e) {
+      print('Erro: $e');
+    }).then((response) async {
+      if (response.statusCode == 200) {
+        return registerResponseJson(response.body);
+      }
+      return null;
+    });
   }
 }

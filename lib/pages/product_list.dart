@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nodejs_crud_app/config.dart';
 import 'package:flutter_nodejs_crud_app/model/product_model.dart';
 import 'package:flutter_nodejs_crud_app/pages/product_item.dart';
 import 'package:flutter_nodejs_crud_app/services/api_service.dart';
+import 'package:flutter_nodejs_crud_app/services/shared_service.dart';
+import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
+import 'package:toast/toast.dart';
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -12,7 +16,9 @@ class ProductsList extends StatefulWidget {
 }
 
 class _ProductsListState extends State<ProductsList> {
+  final GlobalKey _globalKey = GlobalKey();
   bool isApiCallProcess = false;
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +36,7 @@ class _ProductsListState extends State<ProductsList> {
         child: loadProducts(),
         inAsyncCall: isApiCallProcess,
         opacity: 0.3,
-        key: UniqueKey(),
+        key: _globalKey,
       ),
     );
   }
@@ -82,6 +88,27 @@ class _ProductsListState extends State<ProductsList> {
                 },
                 child: const Text('Adicionar Produto'),
               ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  onPrimary: Colors.white,
+                  primary: Colors.blue,
+                  minimumSize: const Size(88, 36),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  SharedService.logout(context);
+                  Navigator.pushNamed(
+                    context,
+                    '/login',
+                  );
+                },
+                child: const Text('Logoff'),
+              ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
@@ -97,6 +124,21 @@ class _ProductsListState extends State<ProductsList> {
 
                       APIService.deleteProduct(model.id).then(
                         (response) {
+                          print(response);
+                          if (response.isNotEmpty) {
+                            // FIX - SHOW ERROR MESSAGE FROM BACK-END
+                            //Toast.show("Toast plugin app", duration: Toast.lengthShort, gravity: Toast.bottom);
+                            FormHelper.showSimpleAlertDialog(
+                              _globalKey.currentContext!,
+                              Config.appName,
+                              "Um erro ocorreu.\n$response",
+                              "OK",
+                              () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          }
+
                           setState(() {
                             isApiCallProcess = false;
                           });
