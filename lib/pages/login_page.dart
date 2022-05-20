@@ -170,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                         isApiCallProcess = false;
                       });
 
-                      if (response?.message == null || response?.message == "") {
+                      if (response != null) {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
                           '/list-product',
@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                         FormHelper.showSimpleAlertDialog(
                           context,
                           Config.appName,
-                          "Login ou senha inválido(s).\n${response?.message}",
+                          "Login ou senha inválido(s).",
                           "OK",
                           () {
                             Navigator.of(context).pop();

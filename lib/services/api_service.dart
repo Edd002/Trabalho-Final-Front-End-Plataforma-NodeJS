@@ -126,34 +126,36 @@ class APIService {
 
   // Login
   static Future<LoginResponseModel?> login(LoginRequestModel model) async {
+    LoginResponseModel? loginResponseModel;
     await client
         .post(Uri.http(Config.apiURL, Config.securityLoginAPIuri),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(model.toJson()))
         .catchError((e) {
       print('Erro: $e');
-    }).then((response) async {
+    }).then((response) {
       if (response.statusCode == 200) {
-        await SharedService.setLoginDetails(loginResponseJson(response.body));
-        return loginResponseJson(response.body);
+        SharedService.setLoginDetails(loginResponseJson(response.body));
+        loginResponseModel = loginResponseJson(response.body);
       }
     });
-    return null;
+    return loginResponseModel;
   }
 
   // Registro
   static Future<RegisterResponseModel?> register(RegisterRequestModel model) async {
+    RegisterResponseModel? registerResponseModel;
     return await client
         .post(Uri.http(Config.apiURL, Config.securityResgisterAPIuri),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(model.toJson()))
         .catchError((e) {
       print('Erro: $e');
-    }).then((response) async {
+    }).then((response) {
       if (response.statusCode == 200) {
-        return registerResponseJson(response.body);
+        registerResponseModel = registerResponseJson(response.body);
       }
-      return null;
+      return registerResponseModel;
     });
   }
 }

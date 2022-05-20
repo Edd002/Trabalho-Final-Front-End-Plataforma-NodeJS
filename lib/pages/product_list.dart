@@ -6,7 +6,6 @@ import 'package:flutter_nodejs_crud_app/services/api_service.dart';
 import 'package:flutter_nodejs_crud_app/services/shared_service.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
-import 'package:toast/toast.dart';
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -124,10 +123,7 @@ class _ProductsListState extends State<ProductsList> {
 
                       APIService.deleteProduct(model.id).then(
                         (response) {
-                          print(response);
                           if (response.isNotEmpty) {
-                            // FIX - SHOW ERROR MESSAGE FROM BACK-END
-                            //Toast.show("Toast plugin app", duration: Toast.lengthShort, gravity: Toast.bottom);
                             FormHelper.showSimpleAlertDialog(
                               _globalKey.currentContext!,
                               Config.appName,

@@ -170,22 +170,22 @@ class _ProductAddEditState extends State<ProductAddEdit> {
                   });
 
                   APIService.saveProduct(productModel!, isEditMode).then(
-                    (response) {
+                    (responseMessage) {
                       setState(() {
                         isApiCallProcess = false;
                       });
 
-                      if (response.isEmpty) {
+                      if (responseMessage.isEmpty) {
                         Navigator.pushNamedAndRemoveUntil(
                           context,
-                          '/',
+                          '/list-product',
                           (route) => false,
                         );
                       } else {
                         FormHelper.showSimpleAlertDialog(
                           context,
                           Config.appName,
-                          "Um erro ocorreu.\n$response",
+                          "Um erro ocorreu.\n$responseMessage",
                           "OK",
                           () {
                             Navigator.of(context).pop();
