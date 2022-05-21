@@ -13,26 +13,25 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter & NodeJS - CRUD Produto'),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.logout,
-              color: Colors.black,
+        appBar: AppBar(
+          title: const Text('Flutter & NodeJS - CRUD Produto'),
+          elevation: 0,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                SharedService.logout(context);
+              },
             ),
-            onPressed: () {
-              SharedService.logout(context);
-            },
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-        ],
-      ),
-      backgroundColor: Colors.grey[200],
-      body: const LoginPage()
-    );
+            const SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
+        backgroundColor: Colors.grey[200],
+        body: const LoginPage());
   }
 }

@@ -9,7 +9,7 @@ Widget _defaultHome = const LoginPage();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Get result of the login function.
+  // Buscar resultados da função de login
   bool _result = await SharedService.isLoggedIn();
   if (_result) {
     _defaultHome = const LoginPage();
@@ -26,13 +26,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter & NodeJS - CRUD Produto',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
       routes: {
         '/': (context) => _defaultHome,
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
-        '/list-product':(context) => const ProductsList(),
+        '/list-product': (context) => const ProductsList(),
         '/add-product': (context) => const ProductAddEdit(),
         '/edit-product': (context) => const ProductAddEdit(),
       },

@@ -224,7 +224,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         isApiCallProcess = false;
                       });
 
-                      if (response?.message == null || response?.message == "") {
+                      if (response?.message == null ||
+                          response?.message == "") {
                         FormHelper.showSimpleAlertDialog(
                           context,
                           Config.appName,

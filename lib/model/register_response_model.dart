@@ -4,14 +4,13 @@ RegisterResponseModel registerResponseJson(String str) =>
     RegisterResponseModel.fromJson(json.decode(str));
 
 class RegisterResponseModel {
-  RegisterResponseModel({
-    required this.id,
-    required this.nome,
-    required this.email,
-    required this.login,
-    required this.roles,
-    required this.message
-  });
+  RegisterResponseModel(
+      {required this.id,
+      required this.nome,
+      required this.email,
+      required this.login,
+      required this.roles,
+      required this.message});
   late final int? id;
   late final String? nome;
   late final String? email;

@@ -6,6 +6,7 @@ import 'package:flutter_nodejs_crud_app/services/api_service.dart';
 import 'package:flutter_nodejs_crud_app/services/shared_service.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
+import 'package:snippet_coder_utils/hex_color.dart';
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -29,8 +30,9 @@ class _ProductsListState extends State<ProductsList> {
       appBar: AppBar(
         title: const Text('Flutter & NodeJS - CRUD Produto'),
         elevation: 0,
+        backgroundColor: HexColor("#283B71"),
       ),
-      backgroundColor: Colors.grey[200],
+      backgroundColor: HexColor("#283B71"),
       body: ProgressHUD(
         child: loadProducts(),
         inAsyncCall: isApiCallProcess,
@@ -70,8 +72,9 @@ class _ProductsListState extends State<ProductsList> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   onPrimary: Colors.white,
-                  primary: Colors.green,
-                  minimumSize: const Size(88, 36),
+                  primary: HexColor("283B71"),
+                  side: const BorderSide(width: 1.0, color: Colors.white),
+                  minimumSize: const Size(200, 40),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
@@ -90,8 +93,9 @@ class _ProductsListState extends State<ProductsList> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   onPrimary: Colors.white,
-                  primary: Colors.blue,
-                  minimumSize: const Size(88, 36),
+                  primary: HexColor("283B71"),
+                  side: const BorderSide(width: 1.0, color: Colors.white),
+                  minimumSize: const Size(200, 40),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(

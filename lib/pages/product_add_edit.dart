@@ -27,8 +27,9 @@ class _ProductAddEditState extends State<ProductAddEdit> {
         appBar: AppBar(
           title: const Text('Flutter & NodeJS - CRUD Produto'),
           elevation: 0,
+          backgroundColor: HexColor("#283B71"),
         ),
-        backgroundColor: Colors.grey[200],
+        backgroundColor: HexColor("#283B71"),
         body: ProgressHUD(
           child: Form(
             key: globalFormKey,
@@ -84,10 +85,11 @@ class _ProductAddEditState extends State<ProductAddEdit> {
               },
               initialValue: productModel!.descricao ?? "",
               obscureText: false,
-              borderFocusColor: Colors.black,
-              borderColor: Colors.black,
-              textColor: Colors.black,
-              hintColor: Colors.black.withOpacity(0.7),
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
               borderRadius: 10,
               showPrefixIcon: false,
             ),
@@ -113,10 +115,11 @@ class _ProductAddEditState extends State<ProductAddEdit> {
               },
               initialValue: productModel!.marca ?? "",
               obscureText: false,
-              borderFocusColor: Colors.black,
-              borderColor: Colors.black,
-              textColor: Colors.black,
-              hintColor: Colors.black.withOpacity(0.7),
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
               borderRadius: 10,
               showPrefixIcon: false,
             ),
@@ -134,7 +137,9 @@ class _ProductAddEditState extends State<ProductAddEdit> {
               (onValidateVal) {
                 if (onValidateVal.isEmpty) {
                   return 'O preço do produto não pode ser vazio.';
-                } else if (double.tryParse(onValidateVal.toString().replaceAll(",", ".")) == null) {
+                } else if (double.tryParse(
+                        onValidateVal.toString().replaceAll(",", ".")) ==
+                    null) {
                   return 'O preço do produto deve ser numérico (ex.: 2.99).';
                 }
                 return null;
@@ -146,10 +151,11 @@ class _ProductAddEditState extends State<ProductAddEdit> {
                   ? ""
                   : productModel!.valor.toString(),
               obscureText: false,
-              borderFocusColor: Colors.black,
-              borderColor: Colors.black,
-              textColor: Colors.black,
-              hintColor: Colors.black.withOpacity(0.7),
+              borderFocusColor: Colors.white,
+              prefixIconColor: Colors.white,
+              borderColor: Colors.white,
+              textColor: Colors.white,
+              hintColor: Colors.white.withOpacity(0.7),
               borderRadius: 10,
               showPrefixIcon: false,
               suffixIcon: const Icon(Icons.monetization_on),

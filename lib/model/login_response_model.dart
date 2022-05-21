@@ -4,14 +4,13 @@ LoginResponseModel loginResponseJson(String str) =>
     LoginResponseModel.fromJson(json.decode(str));
 
 class LoginResponseModel {
-  LoginResponseModel({
-    required this.id,
-    required this.nome,
-    required this.login,
-    required this.roles,
-    required this.token,
-    required this.message
-  });
+  LoginResponseModel(
+      {required this.id,
+      required this.nome,
+      required this.login,
+      required this.roles,
+      required this.token,
+      required this.message});
   late final int? id;
   late final String? nome;
   late final String? login;

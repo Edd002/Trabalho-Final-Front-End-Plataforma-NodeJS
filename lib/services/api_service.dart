@@ -143,7 +143,8 @@ class APIService {
   }
 
   // Registro
-  static Future<RegisterResponseModel?> register(RegisterRequestModel model) async {
+  static Future<RegisterResponseModel?> register(
+      RegisterRequestModel model) async {
     RegisterResponseModel? registerResponseModel;
     return await client
         .post(Uri.http(Config.apiURL, Config.securityResgisterAPIuri),

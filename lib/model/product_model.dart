@@ -7,12 +7,7 @@ class ProductModel {
   late String? valor;
   late String? marca;
 
-  ProductModel({
-    this.id,
-    this.descricao,
-    this.valor,
-    this.marca
-  });
+  ProductModel({this.id, this.descricao, this.valor, this.marca});
 
   ProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
