@@ -3,6 +3,7 @@ import 'package:flutter_nodejs_crud_app/pages/login_page.dart';
 import 'package:flutter_nodejs_crud_app/pages/product_add_edit.dart';
 import 'package:flutter_nodejs_crud_app/pages/product_list.dart';
 import 'package:flutter_nodejs_crud_app/pages/register_page.dart';
+import 'package:flutter_nodejs_crud_app/pages/user_list.dart';
 import 'package:flutter_nodejs_crud_app/services/shared_service.dart';
 
 Widget _defaultHome = const LoginPage();
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => _defaultHome,
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
+        '/list-user': (context) => const UserList(),
         '/list-product': (context) => const ProductsList(),
         '/add-product': (context) => const ProductAddEdit(),
         '/edit-product': (context) => const ProductAddEdit(),

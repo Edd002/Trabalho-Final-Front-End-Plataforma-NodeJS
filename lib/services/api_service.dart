@@ -5,6 +5,7 @@ import 'package:flutter_nodejs_crud_app/model/login_response_model.dart';
 import 'package:flutter_nodejs_crud_app/model/product_model.dart';
 import 'package:flutter_nodejs_crud_app/model/register_request_model.dart';
 import 'package:flutter_nodejs_crud_app/model/register_response_model.dart';
+import 'package:flutter_nodejs_crud_app/model/user_model.dart';
 import 'package:flutter_nodejs_crud_app/services/shared_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,7 +31,7 @@ class APIService {
       var data = jsonDecode(response.body);
       return productsFromJson(data);
     } else {
-      return null;
+      throw Exception('Erro ao carregar produtos.');
     }
   }
 
@@ -122,6 +123,27 @@ class APIService {
       }
     });
     return responseMessage;
+  }
+
+  // Buscar todos os usuários
+  static Future<List<UserModel>?> getUsers() async {
+    LoginResponseModel? loginDetails = await SharedService.loginDetails();
+
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${loginDetails?.token}'
+    };
+
+    var response = await client.get(
+        Uri.http(Config.apiURL, Config.usersAPIuri),
+        headers: requestHeaders);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      return usersFromJson(data);
+    } else {
+      return throw Exception('Erro ao carregar usuários.');
+    }
   }
 
   // Login

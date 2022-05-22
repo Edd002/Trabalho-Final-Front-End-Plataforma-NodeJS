@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nodejs_crud_app/config.dart';
-import 'package:flutter_nodejs_crud_app/model/login_response_model.dart';
-import 'package:flutter_nodejs_crud_app/model/product_model.dart';
-import 'package:flutter_nodejs_crud_app/pages/product_item.dart';
+import 'package:flutter_nodejs_crud_app/model/user_model.dart';
+import 'package:flutter_nodejs_crud_app/pages/user_item.dart';
 import 'package:flutter_nodejs_crud_app/services/api_service.dart';
 import 'package:flutter_nodejs_crud_app/services/shared_service.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:snippet_coder_utils/ProgressHUD.dart';
 import 'package:snippet_coder_utils/hex_color.dart';
 
-class ProductsList extends StatefulWidget {
-  const ProductsList({Key? key}) : super(key: key);
+class UserList extends StatefulWidget {
+  const UserList({Key? key}) : super(key: key);
 
   @override
-  _ProductsListState createState() => _ProductsListState();
+  _UserListState createState() => _UserListState();
 }
 
-class _ProductsListState extends State<ProductsList> {
+class _UserListState extends State<UserList> {
   final GlobalKey _globalKey = GlobalKey();
   bool isApiCallProcess = false;
-  LoginResponseModel? loginDetails;
 
   @override
   void initState() {
@@ -36,7 +34,7 @@ class _ProductsListState extends State<ProductsList> {
       ),
       backgroundColor: HexColor("#283B71"),
       body: ProgressHUD(
-        child: loadProducts(),
+        child: loadUsers(),
         inAsyncCall: isApiCallProcess,
         opacity: 0.3,
         key: _globalKey,
@@ -44,20 +42,15 @@ class _ProductsListState extends State<ProductsList> {
     );
   }
 
-  Future<void> getLoggedUser() async {
-    loginDetails = await SharedService.loginDetails();
-  }
-
-  Widget loadProducts() {
+  Widget loadUsers() {
     return FutureBuilder(
-      future: APIService.getProducts(),
+      future: APIService.getUsers(),
       builder: (
         BuildContext context,
-        AsyncSnapshot<List<ProductModel>?> model,
+        AsyncSnapshot<List<UserModel>?> model,
       ) {
-        getLoggedUser();
         if (model.hasData) {
-          return productList(model.data);
+          return userList(model.data);
         } else if (model.hasError) {
           return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -102,13 +95,12 @@ class _ProductsListState extends State<ProductsList> {
                                 ),
                               ),
                               onPressed: () {
-                                SharedService.logout(context);
                                 Navigator.popAndPushNamed(
                                   context,
-                                  '/login',
+                                  '/list-product',
                                 );
                               },
-                              child: const Text('Tentar Novamente'),
+                              child: const Text('Voltar'),
                             )))
                   ],
                 ),
@@ -122,9 +114,7 @@ class _ProductsListState extends State<ProductsList> {
     );
   }
 
-  Widget productList(products) {
-    String? userRoles = loginDetails?.roles;
-
+  Widget userList(users) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -133,29 +123,6 @@ class _ProductsListState extends State<ProductsList> {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              userRoles != null && userRoles.contains('ADMIN')
-                  ? ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        onPrimary: Colors.white,
-                        primary: HexColor("283B71"),
-                        side: const BorderSide(width: 1.0, color: Colors.white),
-                        minimumSize: const Size(200, 40),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.popAndPushNamed(
-                          context,
-                          '/list-user',
-                        );
-                      },
-                      child: const Text('Listar Usuários'),
-                    )
-                  : Container(),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   onPrimary: Colors.white,
@@ -170,12 +137,12 @@ class _ProductsListState extends State<ProductsList> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(
+                  Navigator.popAndPushNamed(
                     context,
-                    '/add-product',
+                    '/list-product',
                   );
                 },
-                child: const Text('Adicionar Produto'),
+                child: const Text('Listar Produtos'),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -203,35 +170,10 @@ class _ProductsListState extends State<ProductsList> {
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                itemCount: products.length,
+                itemCount: users.length,
                 itemBuilder: (context, index) {
-                  return ProductItem(
-                    model: products[index],
-                    onDelete: (ProductModel model) {
-                      setState(() {
-                        isApiCallProcess = true;
-                      });
-
-                      APIService.deleteProduct(model.id).then(
-                        (response) {
-                          if (response.isNotEmpty) {
-                            FormHelper.showSimpleAlertDialog(
-                              _globalKey.currentContext!,
-                              Config.appName,
-                              "Um erro ocorreu.\n$response",
-                              "OK",
-                              () {
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          }
-
-                          setState(() {
-                            isApiCallProcess = false;
-                          });
-                        },
-                      );
-                    },
+                  return UserItem(
+                    model: users[index],
                   );
                 },
               ),
